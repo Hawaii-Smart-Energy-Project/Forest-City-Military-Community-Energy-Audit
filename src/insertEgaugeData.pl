@@ -138,7 +138,8 @@ sub checkRecordExists {
 # ***   START OF DATA PROCESSING                                                   ***
 # ************************************************************************************
 
-$DBH      = DZSEPLib::connectDatabase( $CONFIG{fc_dbname} );
+$DBH      = DZSEPLib::connectDatabase( $CONFIG{fc_dbname}, $CONFIG{db_host},
+                                      $CONFIG{db_port}, $CONFIG{db_user}, $CONFIG{db_pass} );
 %egMap    = %{ DZSEPLib::mapEgaugeNumbersToHouseID() };
 %colAssoc = %{ DZSEPLib::mapCSVColumnsToDatabaseColumns() };
 
