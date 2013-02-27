@@ -71,12 +71,16 @@ else {
 #     w = return data only new than the timestamp
 foreach my $house (@houses) {
 
+    $house = "egauge" . $house;
+    
     print "\tRetrieving data for $house.\n";
 
-    my $filename = "egauge" . lc($house) . ".csv";
+    my $filename = lc($house) . ".csv";
 
     my $egaugeNumber = $house;
     my $houseNumber  = 0;
+    
+    # @todo eliminate redundant use of egauge number
     if ( $egaugeNumber =~ /(\d+)$/ ) {
         $egaugeNumber = $1;
         print STDERR "\tegauge number = $egaugeNumber\n";
