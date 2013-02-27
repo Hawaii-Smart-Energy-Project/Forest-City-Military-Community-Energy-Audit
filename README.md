@@ -6,8 +6,8 @@ Daniel Zhang, Software Developer
 ## Overview
 
 This software provides automated data operations for a collection of
-energy monitoring devices installed at the Forest City Military
-Community.
+energy monitoring devices installed at the [Forest City Military
+Community](www.forestcity.net) in Hawaii.
 
 Using this software will require appropriate modification based on
 your system configuration. It is licensed under a BSD license
