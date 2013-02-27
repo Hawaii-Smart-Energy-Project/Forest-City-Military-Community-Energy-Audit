@@ -125,7 +125,7 @@ sub mapCSVColumnsToDatabaseColumns {
 sub getLastUnixTimestampForEnergyAutoloadHouse {
     my ($houseID) = @_;
 
-    my $tableName = "energy_autoload_new_dates";
+    my $tableName = "energy_autoload_new_dates"; # @todo remove hardcoding
 
     # convert postgres timestamps to unix timestamps
     my $sql
