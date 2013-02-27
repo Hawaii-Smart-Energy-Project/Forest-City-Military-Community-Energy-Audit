@@ -18,18 +18,14 @@ contained in the repository.
 * Downloads eGauge data using the eGauge web API. 
 * Data is then parsed and uploaded to a data store (PostgreSQL 9.1).
 
-The software is written in Perl 5 and designed for automatic operation
+The software is written in Perl 5 and is designed for automatic operation
 through a cron job.
 
 ## Configuration
 
 Configuration is provided by a text file. An example is listed here.
 
-# Config file for eGauge Automatic Data Services
-#
-# @author Daniel Zhang
-
-    fc_dbname = "fcphase3"
+    fc_dbname = "DBNAME"
     data_dir = "/usr/local/egauge-automatic-data-services/egauge-data-download"
     insert_table = "energy_autoload_new"
     loaded_data_dir = "/usr/local/egauge-automatic-data-services/data-that-has-been-loaded"
@@ -38,6 +34,10 @@ Configuration is provided by a text file. An example is listed here.
     db_user = "USERNAME"
     db_host = "IP.ADDRESS.OR.HOSTNAME"
     db_port = "5432"
+    egauge = "process-me1"
+    egauge = "process-me2"
+    egauge = "process-me3"
+    egauge = "process-me..."
 
 Data is downloaded to data_dir. It is inserted to insert_table and
 archived in loaded_data_dir. If the data cannot be successfully
