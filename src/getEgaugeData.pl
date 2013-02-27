@@ -73,7 +73,7 @@ foreach my $house (@houses) {
 
     print "\tRetrieving data for $house.\n";
 
-    my $filename = lc($house) . ".csv";
+    my $filename = "egauge" . lc($house) . ".csv";
 
     my $egaugeNumber = $house;
     my $houseNumber  = 0;
