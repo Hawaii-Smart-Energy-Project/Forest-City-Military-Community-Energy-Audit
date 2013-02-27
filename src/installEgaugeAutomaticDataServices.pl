@@ -15,7 +15,5 @@ my $configDest = "/usr/local/egauge-automatic-data-services/config";
 `cp getEgaugeData.pl $binDest`;
 `cp insertEgaugeData.pl $binDest`;
 `cp DZSEPLib.pm $libDest`;
-`cp MECODataLib.pm $libDest`;
-`cp MECODataParser.pm $libDest`;
 `cp ../config/egauge-automatic-data-services.config $configDest`;
 
