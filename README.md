@@ -52,7 +52,7 @@ Here is an example crontab that handles running the entire process.
 
 ## Database Schema
 
-A copy of the database schema is provided.
+Table and view creation scripts are provided.
 
 ## Dependencies
 
