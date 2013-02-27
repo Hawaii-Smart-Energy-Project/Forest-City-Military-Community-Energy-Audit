@@ -1,8 +1,64 @@
 Forest City Military Community Energy Audit
 ===========================================
 
-The software downloads eGauge data using the eGauge web API.
+Daniel Zhang, Software Developer
 
-The data is then parsed and uploaded to a data store (PostgreSQL 9.1).
+## Overview
 
-The software is written in Perl 5 and designed for automatic operation through a cron job.
+This software provides automated data operations for a collection of
+energy monitoring devices installed at the Forest City Military
+Community.
+
+Using this software will require appropriate modification based on
+your system configuration. It is licensed under a BSD license
+contained in the repository.
+
+### Features 
+
+* Downloads eGauge data using the eGauge web API. 
+* Data is then parsed and uploaded to a data store (PostgreSQL 9.1).
+
+The software is written in Perl 5 and designed for automatic operation
+through a cron job.
+
+## Configuration
+
+Configuration is provided by a text file. An example is listed here.
+
+# Config file for eGauge Automatic Data Services
+#
+# @author Daniel Zhang
+
+    fc_dbname = "fcphase3"
+    data_dir = "/usr/local/egauge-automatic-data-services/egauge-data-download"
+    insert_table = "energy_autoload_new"
+    loaded_data_dir = "/usr/local/egauge-automatic-data-services/data-that-has-been-loaded"
+    invalid_data_dir = "/usr/local/egauge-automatic-data-services/invalid-data"
+    db_pass = "PASSWORD"
+    db_user = "USERNAME"
+    db_host = "IP.ADDRESS.OR.HOSTNAME"
+    db_port = "5432"
+
+Data is downloaded to data_dir. It is inserted to insert_table and
+archived in loaded_data_dir. If the data cannot be successfully
+loaded, then the data is stored in invalid_data_dir.
+
+## Cron Job
+
+Here is an example crontab that handles running the entire process.
+
+    MAILTO=USER@IP.ADDRESS.OR.HOSTNAME
+    20 * * * * /usr/local/egauge-automatic-data-services/bin/runWithEnvGetEgaugeData.sh
+
+## Database Schema
+
+A copy of the database schema is provided.
+
+## Dependencies
+
+The following Perl modules are used.
+
+1. Getopt::Long
+2. Config::General
+3. DBI
+4. DBD::Pg
