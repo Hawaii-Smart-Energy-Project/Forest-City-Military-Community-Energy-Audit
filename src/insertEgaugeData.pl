@@ -199,9 +199,6 @@ sub insertDataInDataDirectory {
                 $dateDataColumn = $col;    # found a datetime column
             }
 
-            #if ( $columnsToInsert[$col] eq "house_id" ) {
-            #    $houseIDColumn = $col; # found a datetime column
-            #}
             $sql .= "$columnsToInsert[$col]";
             $headerColumnCount++;
             $sql .= ", ";
@@ -259,7 +256,7 @@ sub insertDataInDataDirectory {
 
                 $cnt++;
 
-		# this is a timestamp for when a record is inserted into the database
+        		# this is a timestamp for when a record is inserted into the database
                 $sqlBack .= "to_timestamp("
                     . time() . ") ";
 
