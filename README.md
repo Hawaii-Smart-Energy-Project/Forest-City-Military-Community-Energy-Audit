@@ -15,7 +15,7 @@ contained in the repository.
 
 ### Features 
 
-* Downloads eGauge data using the eGauge web API. 
+* Downloads eGauge data using the [eGauge web API](http://www.egauge.net/docs/egauge-xml-api.pdf). 
 * Data is then parsed and uploaded to a data store (PostgreSQL 9.1).
 
 The software is written in Perl 5 and is designed for automatic operation
