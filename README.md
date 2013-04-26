@@ -1,7 +1,7 @@
 Forest City Military Community Energy Audit
 ===========================================
 
-Daniel Zhang, Software Developer
+Daniel Zhang (張道博), Software Developer
 
 ## Overview
 
@@ -15,11 +15,11 @@ contained in the repository.
 
 ### Features 
 
+* Open-source (BSD license) code in Perl 5.x.
 * Downloads eGauge data using the [eGauge web API](http://www.egauge.net/docs/egauge-xml-api.pdf). 
 * Data is then parsed and uploaded to a data store (PostgreSQL 9.1).
 
-The software is written in Perl 5 and is designed for automatic operation
-through a cron job.
+The software is designed for automatic operation through a cron job.
 
 ## Configuration
 
@@ -30,9 +30,9 @@ Configuration is provided by a text file. An example is listed here.
     insert_table = "energy_autoload_new"
     loaded_data_dir = "/usr/local/egauge-automatic-data-services/data-that-has-been-loaded"
     invalid_data_dir = "/usr/local/egauge-automatic-data-services/invalid-data"
-    db_pass = "PASSWORD"
-    db_user = "USERNAME"
-    db_host = "IP.ADDRESS.OR.HOSTNAME"
+    db_pass = "${PASSWORD}"
+    db_user = "${USERNAME}"
+    db_host = "${IP.ADDRESS.OR.HOSTNAME}"
     db_port = "5432"
     egauge = "process-me1"
     egauge = "process-me2"
