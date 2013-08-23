@@ -4,7 +4,8 @@
 # Forest City Military Community Energy Audit project.
 #
 # @author Daniel Zhang (張道博)
-# Copyright (c) 2013, University of Hawaii Smart Energy Project
+# @copyright Copyright (c) 2013, University of Hawaii Smart Energy Project
+# @license https://raw.github.com/Hawaii-Smart-Energy-Project/Forest-City-Military-Community-Energy-Audit/master/BSD-LICENSE.txt
 ##
 
 package DZSEPLib;

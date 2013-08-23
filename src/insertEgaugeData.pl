@@ -9,7 +9,8 @@
 # The existence of dupes are checked before loading so that no duplicate record insertions are ever attempted.
 #
 # @author Daniel Zhang (張道博)
-# Copyright (c) 2013, University of Hawaii Smart Energy Project
+# @copyright Copyright (c) 2013, University of Hawaii Smart Energy Project
+# @license https://raw.github.com/Hawaii-Smart-Energy-Project/Forest-City-Military-Community-Energy-Audit/master/BSD-LICENSE.txt
 ##
 
 use strict;
