@@ -28,7 +28,7 @@ my $conf
 if ( !$conf ) { die "ERROR: Invalid config" }
 my %CONFIG = $conf->getall;
 
-my $DEBUG = 0;
+my $DEBUG = 1;
 
 # config vars
 my $dataDir = $CONFIG{data_dir};    # the path containing the source data
@@ -52,6 +52,9 @@ my $sth;         # DBI statement handle
 my $dateDataColumn
     = -1;        # index for data column containing the date of the record
 my $houseIDColumn = -1;
+
+my $HEADER_COL_CNT = 0;
+my $DATA_COL_CNT = 0;
 
 ######################################################################
 # END VARIABLES                                                      #
@@ -78,6 +81,7 @@ sub getEgaugeNumber {
 ##
 sub readHeader {
     my ($header) = @_;
+	my $colCnt = 0;
 
     if ($header) {
         @headerItems = split( ',', $header );    # split on commas
@@ -93,9 +97,9 @@ sub readHeader {
     # Translate data header items to SQL columns.
     foreach my $item (@headerItems) {
 
-        if ( $item =~ s/\R//g ) { }  # critical: remove linefeeds of all types
+        if ( $item =~ s/\R//g ) { }  # Critical: Remove linefeeds of all types.
         if ( $item =~ s/\"//g ) {
-        } # critical: need to remove quote symbols in order to match hash items
+        } # Critical: need to remove quote symbols in order to match hash items.
 
         if ($DEBUG) {
             print "colAssoc = ";
@@ -106,7 +110,8 @@ sub readHeader {
         print "item = $item\n" if $DEBUG;
         if ( defined( $colAssoc{$item} ) ) {
             push( @columnsToInsert, $colAssoc{$item} );
-        }    # if it doesnt match dont do anything
+			$colCnt++;
+        }    # If it doesn't match, fail with an error.
         else {
             print "ERROR: nonmatching column: ";
             print $colAssoc{$item};
@@ -114,6 +119,8 @@ sub readHeader {
             exit;
         }
     }
+
+	$HEADER_COL_CNT = $colCnt;
     return 1;
 }
 
@@ -161,7 +168,7 @@ my $FATAL_ERROR = 0;
 ###
 # Iterate through each file containing data and insert the data into the database.
 #
-# @param array reference of files to process
+# @param filesRef: Array reference of files to process.
 ##
 sub insertDataInDataDirectory {
     my ($filesRef) = @_;
@@ -213,10 +220,10 @@ sub insertDataInDataDirectory {
         $sql .= ") VALUES (";
 
         my $sqlFront = $sql;
-        my $sqlBack  = "";
+        my $sqlBack  = ""; # This is the tail of the SQL string.
         my $houseId  = $egMap{ getEgaugeNumber($f) };
 
-        # Data is processed by file by file.
+        # Data is processed file by file.
         #
         # If there's a valid header then the data can be inserted into the database.
         if ($validHeader) {
@@ -227,24 +234,26 @@ sub insertDataInDataDirectory {
             # Use the SQL statements to insert the data.
             $dataLine = 0;
 
-            # Now, we are processing the individual lines of a data file.
+            # Now, the individual lines of a data file are being processed.
             foreach my $line (@data) {
+				print "f=$f, line=$line\n";
                 $sqlBack           = "$houseId,";
                 $currentDataColumn = 0;
 
-                if ( $cnt > 0 ) {    # skip header
+                if ( $cnt > 0 ) {    # Skip header.
                     $lineCanBeInserted = 1;
 
                     # Do something with the line of data.
                     my @dataColumns = split( /,/, $line );
-                    foreach my $value (@dataColumns) {
-                        if ( $value =~ s/\R//g ) { }    # remove linefeed
 
-                        # datetime column differently handled differently
-                        # it contains the timestamp for the data record
+                    foreach my $value (@dataColumns) {
+                        if ( $value =~ s/\R//g ) { }    # Remove linefeed.
+
+                        # The datetime column is differently handled differently.
+                        # It contains the timestamp for the data record.
                         if ( $currentDataColumn == $dateDataColumn ) {
                             $sqlBack .= "to_timestamp($value),"
-                                ;    # change to postgres timestamp
+                                ;    # Change to PostgreSQL timestamp.
                             $currentDatetime = $value;
                         }
                         else {
@@ -253,19 +262,29 @@ sub insertDataInDataDirectory {
 
                         $currentDataColumn++;
                     }
-                }    # end if
+                }    # End if.
+
+				if (($currentDataColumn != $HEADER_COL_CNT) && $cnt > 0) {
+					print "HEADER_COL_CNT=$HEADER_COL_CNT\n" if $DEBUG;
+					print "data col cnt=$currentDataColumn\n" if $DEBUG;
+					print "Line = $line\n" if $DEBUG;
+
+					print "Verify data = " . DZSEPLib::verifyData($f) . "\n";
+
+					die "Data column count does not equal header column count.\n";
+				}
 
                 $cnt++;
 
-        		# this is a timestamp for when a record is inserted into the database
+        		# This is a timestamp for when a record is inserted into the database.
                 $sqlBack .= "to_timestamp("
                     . time() . ") ";
 
-                $sqlBack .= ");";    # end of SQL statement
+                $sqlBack .= ");";    # End of the SQL statement.
 
                 $sql = "$sqlFront$sqlBack";
 
-                # check if record exists
+                # Check if the record exists.
                 if (DZSEPLib::energyRecordExists(
                         $insertTable, $houseId, $currentDatetime
                     ))
@@ -295,14 +314,14 @@ sub insertDataInDataDirectory {
                     }
                 }
                 $dataLine++;
-            }    # end foreach
+            }    # End foreach.
         }
         $DBH->commit();
-        print "finished processing file.\n";
-    }    # end foreach
+        print "Finished processing file.\n";
+    }    # End foreach.
 }
 
-# get all directories having data that needs to be loaded
+# Get all directories with data that needs to be loaded.
 my @dirs = ();
 if ( -d $dataDir ) {
     print "valid directory\n";
@@ -315,7 +334,7 @@ if ($DEBUG) {
     print "\n";
 }
 
-# go through each dir and push the files to be processed into an array
+# Go through each dir and push the files to be processed into an array.
 foreach my $d (@dirs) {
     print $d;
     print "\n";
@@ -326,6 +345,8 @@ foreach my $d (@dirs) {
     opendir( DIR, "$d" ) or die $!;
 
     while ( my $file = readdir(DIR) ) {
+
+		# Only process CSV files.
         if ( $file =~ /^.*\.csv$/ ) {
             push( @files, "$d/$file" );
         }
@@ -335,10 +356,10 @@ foreach my $d (@dirs) {
 # Iterate through each directory and file containing data in the data directory.
 insertDataInDataDirectory( \@files );
 
-# data has now been successfully inserted because the insertion routine fails on all errors.
-# therefore, move the data files to the loaded data directory
+# Data has now been successfully inserted because the insertion routine fails on all errors.
+# Therefore, move the data files to the loaded data directory.
 if ( ! chdir( $CONFIG{data_dir} ) ) {
-    die "Couldnt change to data dir " . $CONFIG{data_dir} . "\n";
+    die "Couldn't change to data directory " . $CONFIG{data_dir} . "\n";
 }
 
 foreach my $d (@dirs) {
